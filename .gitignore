@@ -5,3 +5,4 @@ obj/**
 *.app
 *.unitypackage
 Assets/AniInstancing/Scripts/AnimationInstancing.cs
+.vs/Animation-Instancing/v15/Server/sqlite3/db.lock
