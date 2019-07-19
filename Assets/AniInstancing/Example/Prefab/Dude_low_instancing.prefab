@@ -417,7 +417,7 @@ MonoBehaviour:
   playSpeed: 1
   shadowCastingMode: 0
   receiveShadow: 0
-  applyRootMotion: 0
+  applyRootMotion: 1
   bonePerVertex: 4
 --- !u!136 &136187900318313722
 CapsuleCollider:

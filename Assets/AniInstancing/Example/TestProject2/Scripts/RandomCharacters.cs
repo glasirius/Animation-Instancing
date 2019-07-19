@@ -36,10 +36,10 @@ public class RandomCharacters : MonoBehaviour {
                 gameObject.SetActive(false);
             }
         }
-        if (AnimationInstancing.AnimationInstancingMgr.Instance.UseInstancing)
-        {
-            transform.position = new Vector3(UnityEngine.Random.Range(-20f, 20f), 0, UnityEngine.Random.Range(-20f, 20f));
-        }
+        //if (AnimationInstancing.AnimationInstancingMgr.Instance.UseInstancing)
+        //{
+        //    transform.position = new Vector3(UnityEngine.Random.Range(-20f, 20f), 0, UnityEngine.Random.Range(-20f, 20f));
+        //}
     }
 
     //void OnCollisionEnter(Collision collision)
@@ -54,42 +54,42 @@ public class RandomCharacters : MonoBehaviour {
 	{
         if (AnimationInstancing.AnimationInstancingMgr.Instance.UseInstancing)
         {
-            //if (instancing == null)
-            //{
-            //    gameObject.SetActive(false);
-            //    return;
-            //}
-            //if (instancing.IsPause())
-            //    instancing.CrossFade(0, 0.2f);
-            //var trs = transform;
-            //var pos = trs.position;
-            //if (Vector3.SqrMagnitude(TargetPosition - pos) > 25)
-            //{
+            if (instancing == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            if (instancing.IsPause())
+                instancing.CrossFade(0, 0.2f);
+            var trs = transform;
+            var pos = trs.position;
+            if (Vector3.SqrMagnitude(TargetPosition - pos) > 25)
+            {
 
-            //    //avatar.SetFloat("Speed", 1, SpeedDampTime, Time.deltaTime);
+                //avatar.SetFloat("Speed", 1, SpeedDampTime, Time.deltaTime);
 
-            //    Vector3 curentDir = trs.rotation * Vector3.forward;
-            //    Vector3 wantedDir = (TargetPosition - pos).normalized;
+                Vector3 curentDir = trs.rotation * Vector3.forward;
+                Vector3 wantedDir = (TargetPosition - pos).normalized;
 
-            //    //trs.Translate(wantedDir * 1.0f * Time.deltaTime);
-            //    //trs.rotation.SetLookRotation(wantedDir);
-            //    //gameObject.trs.rotation.SetLookRotation(wantedDir);
-            //    //gameObject.trs.rotation = Quaternion.LookRotation(TargetPosition - pos);
-            //    trs.rotation = Quaternion.RotateTowards(trs.rotation, Quaternion.LookRotation(TargetPosition - pos), 8.0f);
-            //}
-            //else
-            //{
+                //trs.Translate(wantedDir * 1.0f * Time.deltaTime);
+                //trs.rotation.SetLookRotation(wantedDir);
+                //gameObject.trs.rotation.SetLookRotation(wantedDir);
+                //gameObject.trs.rotation = Quaternion.LookRotation(TargetPosition - pos);
+                trs.rotation = Quaternion.RotateTowards(trs.rotation, Quaternion.LookRotation(TargetPosition - pos), 8.0f);
+            }
+            else
+            {
 
-            //    //if (avatar.GetFloat("Speed") < 0.01f)
-            //    {
-            //        instancing.PlayAnimation(UnityEngine.Random.Range(0, 2));
-            //        //instancing.PlayAnimation(1);
-            //        //instancing.CrossFade(1, 0.1f);
-            //        TargetPosition = new Vector3(UnityEngine.Random.Range(-AvatarRange, AvatarRange), 0, UnityEngine.Random.Range(-AvatarRange, AvatarRange));
-            //        trs.rotation = Quaternion.RotateTowards(trs.rotation, Quaternion.LookRotation(TargetPosition - pos), 0.1f);
-            //        //gameObject.trs.rotation = Quaternion.LookRotation(TargetPosition - pos);
-            //    }
-            //}
+                //if (avatar.GetFloat("Speed") < 0.01f)
+                {
+                    instancing.PlayAnimation(UnityEngine.Random.Range(0, 2));
+                    //instancing.PlayAnimation(1);
+                    //instancing.CrossFade(1, 0.1f);
+                    TargetPosition = new Vector3(UnityEngine.Random.Range(-AvatarRange, AvatarRange), 0, UnityEngine.Random.Range(-AvatarRange, AvatarRange));
+                    trs.rotation = Quaternion.RotateTowards(trs.rotation, Quaternion.LookRotation(TargetPosition - pos), 0.1f);
+                    //gameObject.trs.rotation = Quaternion.LookRotation(TargetPosition - pos);
+                }
+            }
         }
         else if (avatar)
         {
