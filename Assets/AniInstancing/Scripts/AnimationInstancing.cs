@@ -98,12 +98,12 @@ namespace AnimationInstancing
             listAttachment = new List<AnimationInstancing>();
             layer = gameObject.layer;
 
-            switch (QualitySettings.blendWeights)
+            switch (QualitySettings.skinWeights)
             {
-                case BlendWeights.TwoBones:
+                case SkinWeights.TwoBones:
                     bonePerVertex = bonePerVertex > 2?2: bonePerVertex;
                     break;
-                case BlendWeights.OneBone:
+                case SkinWeights.OneBone:
                     bonePerVertex = 1;
                     break;
             }
@@ -437,14 +437,14 @@ namespace AnimationInstancing
             return null;
         }
 
-        public void UpdateAnimation()
+        public void UpdateAnimation(float deltaTime)
         {
             if (aniInfo == null || IsPause())
                 return;
 
             if (isInTransition)
             {
-                transitionTimer += Time.deltaTime;
+                transitionTimer += deltaTime;
                 float weight = transitionTimer / transitionDuration;
                 transitionProgress = Mathf.Min(weight, 1.0f);
                 if (transitionProgress >= 1.0f)
@@ -455,7 +455,7 @@ namespace AnimationInstancing
                 }
             }
             float speed = playSpeed * speedParameter;
-            curFrame += speed * Time.deltaTime * aniInfo[aniIndex].fps;
+            curFrame += speed * deltaTime * aniInfo[aniIndex].fps;
             int totalFrame = aniInfo[aniIndex].totalFrame;
             switch (wrapMode)
             {
@@ -502,9 +502,9 @@ namespace AnimationInstancing
             UpdateAnimationEvent();
         }
 
-        public void UpdateLod(Vector3 cameraPosition)
+        public void UpdateLod(Vector3 cameraPosition,float deltaTime)
         {
-            lodFrequencyCount += Time.deltaTime;
+            lodFrequencyCount += deltaTime;
             if (lodFrequencyCount > lodCalculateFrequency)
             {
                 float sqrLength = (cameraPosition - worldTransform.position).sqrMagnitude;
@@ -524,13 +524,14 @@ namespace AnimationInstancing
             AnimationInfo info = GetCurrentAnimationInfo();
             if (info == null)
                 return;
-            if (info.eventList.Count == 0)
+            int eventCount = info.eventList.Count;
+            if (eventCount == 0)
                 return;
 
             if (aniEvent == null)
             {
                 float time = curFrame / info.fps;
-                for (int i = eventIndex >= 0? eventIndex: 0; i < info.eventList.Count; ++i)
+                for (int i = eventIndex >= 0? eventIndex: 0; i < eventCount; ++i)
                 {
                     if (info.eventList[i].time > time)
                     {

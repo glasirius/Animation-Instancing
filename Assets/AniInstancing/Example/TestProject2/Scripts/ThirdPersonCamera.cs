@@ -13,18 +13,21 @@ public class ThirdPersonCamera : MonoBehaviour
 	Transform follow;
 	
 	void Start(){
-		follow = GameObject.FindWithTag ("Player").transform;	
-	}
-	
-	void LateUpdate ()
-	{
-		// setting the target position to be the correct offset from the hovercraft
-		targetPosition = follow.position + Vector3.up * distanceUp - follow.forward * distanceAway;
-		
-		// making a smooth transition between it's current position and the position it wants to be in
-		transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smooth);
-		
-		// make sure the camera is looking the right way!
-		transform.LookAt(follow);
-	}
+        Application.targetFrameRate = 30;
+		follow = GameObject.FindWithTag ("Player").transform;
+        transform.position = new Vector3(-26, 9, 21);
+        transform.LookAt(follow);
+    }
+
+    //void LateUpdate()
+    //{
+    //    // setting the target position to be the correct offset from the hovercraft
+    //    targetPosition = follow.position + Vector3.up * distanceUp - follow.forward * distanceAway;
+
+    //    // making a smooth transition between it's current position and the position it wants to be in
+    //    transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smooth);
+
+    //    // make sure the camera is looking the right way!
+    //    transform.LookAt(follow);
+    //}
 }

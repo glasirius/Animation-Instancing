@@ -38,7 +38,7 @@ SubShader {
 	LOD 400
 	
 	CGPROGRAM
-	#pragma surface surf BlinnPhong addshadow
+	#pragma surface surf BlinnPhong
 	#pragma vertex vert 
 	#pragma multi_compile_instancing
 	//#pragma target 3.0

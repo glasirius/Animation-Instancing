@@ -13,7 +13,7 @@ CGPROGRAM
 #include "AnimationInstancingBase.cginc"
 
 
-#pragma surface surf Lambert vertex:vert addshadow
+#pragma surface surf Lambert vertex:vert
 #pragma multi_compile_instancing
 
 sampler2D _MainTex;

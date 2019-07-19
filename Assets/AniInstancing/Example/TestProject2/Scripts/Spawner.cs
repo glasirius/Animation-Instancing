@@ -13,7 +13,8 @@ public class Spawner: MonoBehaviour {
     List<GameObject> objList;
 	void OnGUI()
 	{
-		GUILayout.Label(string.Format("Spawns up to {0} characters, current {1}", showCount, count));
+        float fps = 1.0f / UnityEngine.Time.smoothDeltaTime;
+        GUILayout.Label(string.Format("Spawns up to {0} characters, current {1}, fps {2}", showCount, count, fps));
 
         if (GUI.Button(new Rect(10, 100, 100, 40), "Decrease"))
         {

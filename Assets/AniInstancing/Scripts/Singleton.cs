@@ -18,6 +18,8 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         get
         {
+            if (_instance)
+                return _instance;
             lock (_lock)
             {
                 if (_instance == null)

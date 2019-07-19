@@ -134,7 +134,7 @@ namespace AnimationInstancing
 
         void Update()
         {
-            ApplyBoneMatrix();
+            ApplyBoneMatrix(Time.deltaTime);
             Render();
         }
 
@@ -170,8 +170,8 @@ namespace AnimationInstancing
                                         data.worldMatrix[k][i],
                                         package.instancingCount,
                                         package.propertyBlock,
-                                        vertexCache.shadowcastingMode,
-                                        vertexCache.receiveShadow,
+                                        ShadowCastingMode.Off,
+                                        false,
                                         vertexCache.layer);
                                 }
                                 else
@@ -314,10 +314,10 @@ namespace AnimationInstancing
             }
         }
        
-        void ApplyBoneMatrix()
+        void ApplyBoneMatrix(float deltaTime)
         {
             Vector3 cameraPosition = cameraTransform.position;
-            for (int i = 0; i != aniInstancingList.Count; ++i)
+            for (int i = 0; i < aniInstancingList.Count; ++i)
             {
                 AnimationInstancing instance = aniInstancingList[i];
                 if (!instance.IsPlaying())
@@ -326,15 +326,15 @@ namespace AnimationInstancing
                     continue;
 
                 if (instance.applyRootMotion)
-                    ApplyRootMotion(instance);
+                    ApplyRootMotion(instance, deltaTime);
 
-                instance.UpdateAnimation();
-                instance.boundingSpere.position = instance.transform.position;
+                instance.UpdateAnimation(deltaTime);
+                instance.boundingSpere.position = instance.worldTransform.position;
                 boundingSphere[i] = instance.boundingSpere;
 
                 if (!instance.visible)
                     continue;
-                instance.UpdateLod(cameraPosition);
+                instance.UpdateLod(cameraPosition, deltaTime);
 
                 AnimationInstancing.LodInfo lod = instance.lodInfo[instance.lodLevel];
                 int aniTextureIndex = -1;
@@ -343,29 +343,30 @@ namespace AnimationInstancing
                 else
                     aniTextureIndex = instance.aniTextureIndex;
 
-                for (int j = 0; j != lod.vertexCacheList.Length; ++j)
+                for (int j = 0; j < lod.vertexCacheList.Length; ++j)
                 {
                     VertexCache cache = lod.vertexCacheList[j];
                     MaterialBlock block = lod.materialBlockList[j];
-                    Debug.Assert(block != null);
+                    //Debug.Assert(block != null);
                     int packageIndex = block.runtimePackageIndex[aniTextureIndex];
-                    Debug.Assert(packageIndex < block.packageList[aniTextureIndex].Count);
-                    InstancingPackage package = block.packageList[aniTextureIndex][packageIndex];
+                    var packageList = block.packageList[aniTextureIndex];
+                    //Debug.Assert(packageIndex < packageList.Count);
+                    InstancingPackage package = packageList[packageIndex];
                     if (package.instancingCount + 1 > instancingPackageSize)
                     {
                         ++block.runtimePackageIndex[aniTextureIndex];
                         packageIndex = block.runtimePackageIndex[aniTextureIndex];
-                        if (packageIndex >= block.packageList[aniTextureIndex].Count)
+                        if (packageIndex >= packageList.Count)
                         {
                             InstancingPackage newPackage = CreatePackage(block.instanceData,
                                 cache.mesh,
                                 cache.materials,
                                 aniTextureIndex);
-                            block.packageList[aniTextureIndex].Add(newPackage);
+                            packageList.Add(newPackage);
                             PreparePackageMaterial(newPackage, cache, aniTextureIndex);
                             newPackage.instancingCount = 1;
                         }
-                        block.packageList[aniTextureIndex][packageIndex].instancingCount = 1;
+                        packageList[packageIndex].instancingCount = 1;
                     }
                     else
                         ++package.instancingCount;
@@ -421,7 +422,7 @@ namespace AnimationInstancing
         }
 
 
-        private void ApplyRootMotion(AnimationInstancing instance)
+        private void ApplyRootMotion(AnimationInstancing instance,float deltaTime)
         {
             AnimationInfo info = instance.GetCurrentAnimationInfo();
             if (info == null || !info.rootMotion)
@@ -439,10 +440,10 @@ namespace AnimationInstancing
 
             {
                 Quaternion localQuaternion = instance.worldTransform.localRotation;
-                Quaternion delta = Quaternion.Euler(angularVelocity * Time.deltaTime);
+                Quaternion delta = Quaternion.Euler(angularVelocity * deltaTime);
                 localQuaternion = localQuaternion * delta;
 
-                Vector3 offset = velocity * Time.deltaTime;
+                Vector3 offset = velocity * deltaTime;
                 offset = localQuaternion * offset;
                 //offset.y = 0.0f;
                 Vector3 localPosition = instance.worldTransform.localPosition;
